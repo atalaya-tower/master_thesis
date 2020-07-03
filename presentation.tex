@@ -1,0 +1,380 @@
+\documentclass[xetex, aspectratio = 169]{beamer}
+\usecolortheme{beaver}
+\beamertemplatenavigationsymbolsempty
+\setbeamertemplate{footline}[frame number]
+
+\usepackage{fontspec}
+\usepackage{xecyr}
+\usepackage[russian]{babel}
+
+\usepackage{fvextra}
+\usepackage[babel]{microtype}
+\usepackage[autostyle]{csquotes}
+
+\defaultfontfeatures{Ligatures = {TeX, Historic}, Mapping = tex-text}
+\setmainfont{CMU Serif}
+\setsansfont{CMU Sans Serif}
+\setmonofont{CMU Typewriter Text}
+%\newfontfamily{\agio}{AgioUnicode}
+
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{tabularx}
+\renewcommand\theadfont{\normalsize}
+
+\usepackage{xcolor}
+\usepackage{textcomp}
+\usepackage{graphicx}
+\usepackage{tikz-er2}
+\graphicspath{{fig/}}
+
+\usepackage{schemata}
+\usepackage{fancyvrb}
+
+\usepackage[group-separator={,}]{siunitx}
+\usepackage[russian]{datetime2}
+
+\begin{document}
+
+\title{Градуировка тональной шкалы реакций \\ на~интернет-новости \\ (на материале русского, английского и испанского языков)}
+\author{Савинцева Дарья Викторовна}
+\subtitle{Образовательная программа ВМ.5626 \\ "<Прикладная и экспериментальная лингвистика"> \\ Профиль "<Компьютерная лингвистика и~интеллектуальные технологии">}
+\institute{Научный руководитель: к.",ф.",н., доц.\ Азарова~И.",В.}
+\date{\DTMdisplaydate{2020}{06}{16}{5}}
+
+\frame{\titlepage}
+
+%\begin{frame}{Цель и задачи работы}
+
+%	Цель: создать тональную шкалу тем, представленных в комментариях пользователей социальных сетей на актуальные новости.
+%	\vspace{0.5em}
+
+%	Задачи:
+%	\begin{enumerate}
+%		\item<1-> Определить рабочую модель тонального анализа на базе современных методов автоматического анализа текстов:
+%		\begin{itemize}
+%			\item Подобрать и дополнить существующие тональные лексиконы для русского, английского и испанского языков;
+%			\item Определить модель тематического моделирования;
+%		\end{itemize}
+%		\item<2-> Создать корпусы комментариев в новостных группах социальных сетей на русском, английском и испанском языках;
+%		\item<3-> Разработать процедуру выделения тональных компонентов в текстах, используя тематическое моделирование и тональные лексиконы;
+%		\item<4-> Разработать шкалу для сопоставления тональной окраски тем.
+%	\end{enumerate}
+%\end{frame}
+
+\begin{frame}{Цель и задачи работы}
+    \begin{block}{Цель}
+        Создать тональную шкалу тем, представленных в комментариях пользователей социальных сетей на актуальные новости.
+    \end{block}
+
+    \begin{block}{Задачи}
+        \begin{enumerate}
+            \item Определить рабочую модель тонального анализа на базе современных методов автоматического анализа текстов:
+            \begin{itemize}
+                \item Подобрать и дополнить существующие тональные лексиконы для русского, английского и испанского языков;
+                \item Определить модель тематического моделирования;
+            \end{itemize}
+            \item Создать корпусы комментариев в новостных группах социальных сетей на русском, английском и испанском языках;
+            \item Разработать процедуру выделения тональных компонентов в текстах, используя тематическое моделирование и тональные лексиконы;
+            \item Разработать шкалу для сопоставления тональной окраски тем.
+        \end{enumerate}
+    \end{block}
+\end{frame}
+
+\begin{frame}{Анализ тональности и тематическое моделирование}
+    \begin{block}{Анализ тональности}
+        \begin{itemize}
+            \item Это набор методов выделения эмоционально-экспрессивно окрашенных компонентов в~тексте.
+            \item В исследовании используется словарный подход.
+        \end{itemize}
+    \end{block}
+
+    \begin{block}{Тематическое моделирование}
+        \begin{itemize}
+            \item Это инструмент статистического анализа текста, задача которого выделить темы в~коллекции документов, то, как эти темы связаны друг с~другом.
+            \item В исследовании используется алгоритм тематического моделирования латентное размещение Дирихле, реализованный в библиотеке gensim.
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{Гипотеза}
+
+	Распределение тональных компонентов в темах комментариев может показать:
+	\vspace{0.5em}
+
+	\begin{itemize}
+		\item насколько тонально окрашена та или иная тема в сравнении с остальными;
+		\item какова средняя тональная окраска темы;
+		\item разницу в тональной окраске тем в разных языках.
+	\end{itemize}
+	\vspace{0.5em}
+
+	Так станет возможно расположить темы на тональной шкале, основанной на тональности комментариев пользователей.
+
+\end{frame}
+
+\begin{frame}{Корпусы комментариев}
+    \begin{table}
+        \small
+        \centering
+        \begin{tabularx}{\textwidth}{XXXXX}
+            \toprule
+            \centering \multirow{4}{*}{\thead{Язык}} &
+            \centering \multirow{4}{*}{\thead{Источники \\ (кол-во)}} &
+            \centering \multirow{4}{*}{\thead{Комментарии}} &
+            \multicolumn{2}{c}{\thead{Словарь}} \\ \cmidrule{4-5}
+            & & & \thead{до \\ обработки} & \thead{после \\ обработки} \\ \midrule\midrule
+            русский & Вконтакте (47) & \num{6022501} & \num{2003523} & \num{557091} \\ \midrule
+            английский & YouTube (15) & \num{6463610} & \num{1158766} & \num{399738} \\ \midrule
+            испанский & YouTube (15) & \num{526436} & \num{284714} & \num{101858} \\
+            \bottomrule
+        \end{tabularx}
+    \end{table}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Тональный словарь для русского языка}
+	\begin{columns}
+		\column{0.5\linewidth}
+		\begin{itemize}
+            \item создан на основе словаря Linis-crowd
+            \item \num{11653} единицы
+            \item \(-1\) или \(1\) тональность
+        \end{itemize}
+        \column{0.5\linewidth}
+        \begin{Verbatim}[fontsize=\small]
+        подвиг,Nn,1
+        подвижник,Nn,1
+        подвижница,Nn,1
+        подвижнический,Aj,1
+        подвижничество,Nn,1
+        подвижность,Nn,1
+        подвижный,Aj,1
+        подводить,Vb,-1
+        подворовывание,Nn,-1
+        подворовывать,Vb,-1
+        подвох,Nn,-1
+        \end{Verbatim}
+	\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Тональный словарь для английского языка}
+    \begin{columns}
+        \column{0.5\linewidth}
+        \begin{itemize}
+            \item Opinion (Sentiment) Lexicon
+            \item \num{6789} единиц
+            \item \(-1\) или \(1\) тональность
+        \end{itemize}
+        \column{0.5\linewidth}
+        \begin{Verbatim}[fontsize=\small]
+        outsider,-1
+        outsmart,1
+        outstanding,1
+        outstandingly,1
+        outstrip,1
+        outwit,1
+        ovation,1
+        over-acted,-1
+        over-awe,-1
+        over-balanced,-1
+        over-hyped,-1
+        \end{Verbatim}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Тональный словарь для испанского языка}
+    \begin{columns}
+        \column{0.5\linewidth}
+        \begin{itemize}
+            \item создан на основе словарей improved Spanish Opinion Lexicon и Spanish Sentiment Lexicon
+            \item \num{10463} единицы
+            \item \(-1\) или \(1\) тональность
+        \end{itemize}
+        \column{0.5\linewidth}
+        \begin{Verbatim}[fontsize=\small]
+        tirana,-1
+        tiranas,-1
+        tirania,-1
+        tiranica,-1
+        tiranicamente,-1
+        tiranicas,-1
+        tiranico,-1
+        tiranicos,-1
+        tiranizar,-1
+        tirano,-1
+        tiranos,-1
+        \end{Verbatim}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Выделенные темы в корпусах}
+    \small
+    \centering
+    \begin{tabular}{l|l|l} \hline
+        {Русский} & {Американский} & {Латиноамериканский} \\ \hline\hline
+        общественные вопросы & общественное мнение & демократия \\
+        ситуация в стране & ложь и страх & венесуэла и россия \\
+        бытовые проблемы & здравоохранение & революционные настроения \\
+        споры & коронавирус & правительство \\
+        нужды человека & бог & воровство и терроризм \\
+        путин и страна & трамп~и ситуация в~стране & президент \\
+        работа & человеческие чувства & проблемы людей \\
+        карантин & расизм & освобождение \\
+        финансовые проблемы & законопорядок & ложь и предательство \\
+        семья & деньги и работа & ожидания \\
+        жизнь в россии & ненависть и обман & ситуация в мире \\
+        коронавирус в мире & повседневная жизнь & базовые нужды \\
+        удалённые или спам & америка, патриотизм & сша и латинская америка \\
+        повседневная жизнь & выборы & коммунисты и~диктатура \\
+        образование & криминал и коррупция & трамп \\
+        \hline
+    \end{tabular}
+\end{frame}
+
+\begin{frame}{Визуализация полученных тем}
+	\centering
+	\includegraphics[width=0.6\linewidth]{tp_meduza_rus}
+
+	\includegraphics[width=0.6\linewidth]{tp_huffpost_usa}
+\end{frame}
+
+\begin{frame}{Распределение тональных компонентов в российском корпусе}
+	\begin{columns}
+		\column{0.3\linewidth}
+		\centering
+		\includegraphics[width=0.75\linewidth]{total_sentim_comp_rus}
+		\vspace{0.3em}
+
+		Положительные и отрицательные
+
+		\column{0.3\linewidth}
+		\centering
+		\includegraphics[width=0.75\linewidth]{neg_sentim_rus}
+		\vspace{0.3em}
+
+		Отрицательные
+
+		\column{0.3\linewidth}
+		\centering
+		\includegraphics[width=0.75\linewidth]{pos_sentim_rus}
+		\vspace{0.3em}
+
+		Положительные
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Распределение тональных компонентов в американском корпусе}
+    \begin{columns}
+        \column{0.3\linewidth}
+        \centering
+        \includegraphics[width=0.75\linewidth]{all_sentims_usa}
+        \vspace{0.3em}
+
+        Положительные и отрицательные
+
+        \column{0.3\linewidth}
+        \centering
+        \includegraphics[width=0.75\linewidth]{neg_sentims_usa}
+        \vspace{0.3em}
+
+        Отрицательные
+
+        \column{0.3\linewidth}
+        \centering
+        \includegraphics[width=0.75\linewidth]{pos_sentims_usa}
+        \vspace{0.3em}
+
+        Положительные
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Распределение тональных компонентов в латиноамериканском корпусе}
+    \begin{columns}
+        \column{0.3\linewidth}
+        \centering
+        \includegraphics[width=0.75\linewidth]{total_sentim_comp_al}
+        \vspace{0.3em}
+
+        Положительные и отрицательные
+
+        \column{0.3\linewidth}
+        \centering
+        \includegraphics[width=0.75\linewidth]{negative_sentim_al}
+        \vspace{0.3em}
+
+        Отрицательные
+
+        \column{0.3\linewidth}
+        \centering
+        \includegraphics[width=0.75\linewidth]{positive_sentim_al}
+        \vspace{0.3em}
+
+        Положительные
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Среднее значение тональности для каждой темы}
+    \begin{columns}
+        \column{0.3\linewidth}
+        \centering
+        \includegraphics[width=0.75\linewidth]{avg_sentim_rus}
+        \vspace{0.3em}
+
+        Российский корпус
+
+        \column{0.3\linewidth}
+        \centering
+        \includegraphics[width=0.75\linewidth]{avg_sent_usa}
+        \vspace{0.3em}
+
+        Американский корпус
+
+        \column{0.3\linewidth}
+        \centering
+        \includegraphics[width=0.75\linewidth]{avg_sentim_al}
+        \vspace{0.3em}
+
+        Латиноамериканский корпус
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Тональная шкала тем}
+    \begin{center}
+        \begin{tabular}{lll}
+            {Тема} & {Сумма средних} & {Среднее суммы} \\ \hline\hline
+            {бытовые проблемы} & \num{-0.31} & \num{-0.15} \\
+            {нужды человека} & \num{-0.30} & \num{-0.10} \\
+            {ситуация в стране} & \num{-0.29} & \num{-0.10} \\
+            {общественные вопросы} & \num{-0.26} & \num{-0.09} \\
+            {коронавирус} & \num{-0.23} & \num{-0.11} \\
+            {президент} & \num{-0.20} & \num{-0.10} \\
+            {повседневная жизнь} & \num{-0.19} & \num{-0.01} \\
+            {ситуация в мире} & \num{-0.14} & \num{-0.07} \\
+        \end{tabular}
+    \end{center}
+
+\end{frame}
+
+\begin{frame}{Выводы}
+    \small
+	\begin{itemize}
+		\item Созданы корпусы комментариев к новостным группам на русском, английском и испанском языке с помошью материалов российских, американских и латиноамериканских СМИ;
+		\vspace{0.5em}
+
+		\item С помощью тематического моделирования выделены темы, присутствующие в комментариях, построены тематические профили сообществ;
+		\vspace{0.5em}
+
+		\item Темы размечены при помощи тональных словарей, показаны распределения тональных компонентов в темах;
+		\vspace{0.5em}
+
+		\item Определено среднее значение тональности для каждой темы, на основании которого построена тональная шкала тем для сходных тем из трёх корпусов;
+
+        \item Вывод исследования: внимание пользователей в комментариях новостных сообществ и каналов всех исследуемых групп сосредоточено больше на общественно-политических темах, нежели чем на личных и бытовых, но бытовые и общественные проблемы находят у пользователей больший эмоциональный отклик, чем темы политики и ситуации в мире.
+	\end{itemize}
+\end{frame}
+
+\end{document}
